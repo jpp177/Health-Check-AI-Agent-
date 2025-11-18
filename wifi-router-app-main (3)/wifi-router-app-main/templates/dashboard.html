@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wi-Fi Health Dashboard</title>
+<title>Device Health Intelligence Dashboard</title>
 <link rel="stylesheet" href="/static/dashboard.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script defer src="/static/dashboard.js"></script>
@@ -15,7 +15,7 @@
 
   <aside class="sidebar">
     <div class="logo">
-      <h2>📡 Wi-Fi Health Check</h2>
+      <h2>📡 Device Health Intelligence</h2>
     </div>
     <nav class="nav-menu">
       <a href="/dashboard" class="nav-item active">
@@ -43,13 +43,10 @@
     
     <header class="dashboard-header">
       <div class="header-title">
-        <h1>Wifi Health Dashboard</h1>
+        <h1>Device Health Intelligence Dashboard</h1>
         <p class="subtitle">Real-time monitoring and diagnostics</p>
       </div>
-      <div class="header-actions">
-        <button id="refreshBtn" class="btn btn-secondary">🔄 Refresh</button>
-        <button id="runDiagnosticsBtn" class="btn btn-primary">Run Diagnostics</button>
-      </div>
+    
     </header>
 
     <!-- Status Overview Cards -->
@@ -285,6 +282,74 @@
 
   </main>
 
+</div>
+
+<!-- Anomaly Details Modal -->
+<div id="anomalyModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Device Anomaly Details</h2>
+      <span class="modal-close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="detail-section">
+        <h3>🔍 Anomaly Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Type:</span>
+            <span class="detail-value" id="modalAnomalyType">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Detected:</span>
+            <span class="detail-value" id="modalTimestamp">-</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h3>📱 Device Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">MAC Address:</span>
+            <span class="detail-value" id="modalMacAddress">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Model:</span>
+            <span class="detail-value" id="modalModel">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Firmware:</span>
+            <span class="detail-value" id="modalFirmware">-</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h3>📶 Network Metrics</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Signal Strength (RSSI):</span>
+            <span class="detail-value" id="modalRssi">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Frequency Band:</span>
+            <span class="detail-value" id="modalFrequency">-</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h3>💡 Recommended Actions</h3>
+        <ul class="recommendations-list" id="modalRecommendations">
+          <li>Loading recommendations...</li>
+        </ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAnomalyModal()">Close</button>
+      <button class="btn btn-primary" onclick="createTicketFromAnomaly()">Create Ticket</button>
+    </div>
+  </div>
 </div>
 
 </body>

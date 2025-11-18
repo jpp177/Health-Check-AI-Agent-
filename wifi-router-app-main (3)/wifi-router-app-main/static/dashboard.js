@@ -205,6 +205,11 @@ function updateAnomaliesList(anomalies) {
       </div>
     `;
     
+    // Make anomaly item clickable
+    anomalyItem.addEventListener('click', () => {
+      showAnomalyModal(anomaly, timeAgo);
+    });
+    
     anomaliesList.appendChild(anomalyItem);
   });
 }
@@ -677,3 +682,141 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// Modal Functions
+let currentAnomalyData = null;
+
+function showAnomalyModal(anomaly, timeAgo) {
+  currentAnomalyData = anomaly;
+  const modal = document.getElementById('anomalyModal');
+  
+  // Populate modal with anomaly data
+  document.getElementById('modalAnomalyType').textContent = anomaly.reason;
+  document.getElementById('modalTimestamp').textContent = timeAgo + ' (' + new Date(anomaly.timestamp).toLocaleString() + ')';
+  document.getElementById('modalMacAddress').textContent = anomaly.device;
+  document.getElementById('modalModel').textContent = anomaly.model || 'Unknown';
+  document.getElementById('modalFirmware').textContent = anomaly.firmware || 'Unknown';
+  
+  // Format RSSI with quality indicator
+  const rssi = anomaly.rssi;
+  let rssiQuality = '';
+  if (rssi > -50) rssiQuality = '(Excellent)';
+  else if (rssi > -60) rssiQuality = '(Good)';
+  else if (rssi > -70) rssiQuality = '(Fair)';
+  else rssiQuality = '(Poor)';
+  document.getElementById('modalRssi').textContent = `${rssi} dBm ${rssiQuality}`;
+  
+  // Format frequency
+  const freq = anomaly.frequency;
+  const freqText = freq === 2 ? '2.4 GHz' : freq === 5 ? '5 GHz' : `${freq} GHz`;
+  document.getElementById('modalFrequency').textContent = freqText;
+  
+  // Generate recommendations based on anomaly type and metrics
+  const recommendations = generateRecommendations(anomaly);
+  const recList = document.getElementById('modalRecommendations');
+  recList.innerHTML = '';
+  recommendations.forEach(rec => {
+    const li = document.createElement('li');
+    li.textContent = rec;
+    recList.appendChild(li);
+  });
+  
+  // Show modal
+  modal.style.display = 'block';
+}
+
+function closeAnomalyModal() {
+  const modal = document.getElementById('anomalyModal');
+  modal.style.display = 'none';
+  currentAnomalyData = null;
+}
+
+function generateRecommendations(anomaly) {
+  const recommendations = [];
+  const reason = anomaly.reason.toLowerCase();
+  const rssi = anomaly.rssi;
+  
+  // RSSI-based recommendations
+  if (rssi < -70) {
+    recommendations.push('Consider moving the device closer to the router or access point');
+    recommendations.push('Check for physical obstructions or interference sources');
+  }
+  
+  // Anomaly type specific recommendations
+  if (reason.includes('signal') || reason.includes('rssi')) {
+    recommendations.push('Verify router antenna positioning and orientation');
+    recommendations.push('Consider adding a WiFi extender or mesh node');
+  }
+  
+  if (reason.includes('retransmit') || reason.includes('fail') || reason.includes('drop')) {
+    recommendations.push('Check for channel congestion and consider changing WiFi channel');
+    recommendations.push('Update device firmware to the latest version');
+    recommendations.push('Reduce number of devices on the same frequency band');
+  }
+  
+  if (reason.includes('latency') || reason.includes('ping')) {
+    recommendations.push('Run speed test to verify internet connection');
+    recommendations.push('Check for background applications consuming bandwidth');
+  }
+  
+  if (reason.includes('connection') || reason.includes('disconnect')) {
+    recommendations.push('Verify device WiFi drivers are up to date');
+    recommendations.push('Check router logs for disconnection events');
+    recommendations.push('Consider disabling power saving mode on the device');
+  }
+  
+  // Frequency-specific recommendations
+  if (anomaly.frequency === 2) {
+    recommendations.push('2.4 GHz band is more prone to interference - consider switching to 5 GHz if supported');
+  }
+  
+  // Generic recommendations if none specific
+  if (recommendations.length === 0) {
+    recommendations.push('Monitor device performance over the next few hours');
+    recommendations.push('Check router dashboard for additional diagnostic information');
+    recommendations.push('Contact support if issue persists');
+  }
+  
+  return recommendations;
+}
+
+function createTicketFromAnomaly() {
+  if (!currentAnomalyData) return;
+  
+  // This would integrate with your ticketing system
+  showNotification('Ticket creation feature coming soon!', 'info');
+  console.log('Creating ticket for anomaly:', currentAnomalyData);
+  
+  // Close modal after ticket creation
+  // closeAnomalyModal();
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+  const modal = document.getElementById('anomalyModal');
+  if (event.target === modal) {
+    closeAnomalyModal();
+  }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeAnomalyModal();
+  }
+});
+
+// Setup modal close button after DOM loads
+function setupModalHandlers() {
+  const closeBtn = document.querySelector('.modal-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeAnomalyModal);
+  }
+}
+
+// Call setup after dashboard is initialized
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupModalHandlers);
+} else {
+  setupModalHandlers();
+}

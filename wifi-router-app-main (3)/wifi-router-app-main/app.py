@@ -105,6 +105,7 @@ def wifi_metrics():
         if 'firmware' in df.columns:
             for firmware in df['firmware'].unique():
                 firmware_df = df[df['firmware'] == firmware]
+
                 total = len(firmware_df)
                 anomaly_cnt = len(firmware_df[firmware_df['label'] == 'anomaly'])
                 anomalies_by_firmware[firmware] = {
