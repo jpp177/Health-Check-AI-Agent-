@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wi-Fi Support Assistant</title>
+<link rel="stylesheet" href="/static/chat.css">
+<script defer src="/static/chat.js"></script>
+</head>
+
+<body>
+
+<div class="chat-page-container">
+
+  <aside class="sidebar">
+    <div class="logo">
+      <h2>📡 Wi-Fi Monitor</h2>
+    </div>
+    <nav class="nav-menu">
+      <a href="/dashboard" class="nav-item">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      <a href="/" class="nav-item active">
+        <span class="icon">💬</span> Chat Support
+      </a>
+      <!-- <a href="/diagnostics" class="nav-item">
+        <span class="icon">🔧</span> Diagnostics
+      </a>
+      <a href="/alerts" class="nav-item">
+        <span class="icon">🔔</span> Alerts
+      </a>
+      <a href="/settings" class="nav-item">
+        <span class="icon">⚙️</span> Settings
+      </a> -->
+    </nav>
+  </aside>
+
+  <div class="app-container">
+
+    <header>
+      <h2>📡 Wi-Fi Support Assistant</h2>
+      <button id="runBtn" class="action-btn">Run Diagnostics</button>
+    </header>
+
+    <div id="chatBox" class="chat-box"></div>
+
+    <div class="input-area">
+      <input id="chatInput" type="text" placeholder="Ask about your Wi-Fi…" />
+      <button id="sendBtn" class="send-btn">➤</button>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

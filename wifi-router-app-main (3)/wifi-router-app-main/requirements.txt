@@ -1,0 +1,10 @@
+flask
+pandas
+numpy
+scikit-learn
+python-dotenv
+langchain
+langchain-core
+langchain-community
+langchain-openai
+openai
