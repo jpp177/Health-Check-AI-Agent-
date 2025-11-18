@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Router Health Dashboard</title>
+<title>Wi-Fi Health Dashboard</title>
 <link rel="stylesheet" href="/static/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script defer src="/static/dashboard.js"></script>
 </head>
 
@@ -14,14 +15,17 @@
 
   <aside class="sidebar">
     <div class="logo">
-      <h2>📡 Wi-Fi Monitor</h2>
+      <h2>📡 Wi-Fi Health Check</h2>
     </div>
     <nav class="nav-menu">
       <a href="/dashboard" class="nav-item active">
         <span class="icon">📊</span> Dashboard
       </a>
       <a href="/" class="nav-item">
-        <span class="icon">💬</span> Chat Support
+        <span class="icon">💬</span> Customer GPT
+      </a>
+      <a href="/" class="nav-item">
+        <span class="icon">💬</span> Technician GPT
       </a>
       <!-- <a href="/diagnostics" class="nav-item">
         <span class="icon">🔧</span> Diagnostics
@@ -39,7 +43,7 @@
     
     <header class="dashboard-header">
       <div class="header-title">
-        <h1>Router Health Dashboard</h1>
+        <h1>Wifi Health Dashboard</h1>
         <p class="subtitle">Real-time monitoring and diagnostics</p>
       </div>
       <div class="header-actions">
@@ -50,7 +54,7 @@
 
     <!-- Status Overview Cards -->
     <section class="status-overview">
-      <div class="card status-card">
+      <!-- <div class="card status-card">
         <div class="card-icon status-icon">🟢</div>
         <div class="card-content">
           <h3>Router Status</h3>
@@ -84,139 +88,198 @@
           <p class="status-value" id="networkSpeed">248 Mbps</p>
           <span class="status-label">Download</span>
         </div>
-      </div>
+      </div> -->
     </section>
 
     <!-- Main Content Grid -->
     <div class="content-grid">
       
-      <!-- Network Performance Chart -->
-      <section class="card chart-card">
-        <div class="card-header">
-          <h3>Network Performance</h3>
-          <select id="timeRange" class="time-selector">
-            <option value="1h">Last Hour</option>
-            <option value="6h">Last 6 Hours</option>
-            <option value="24h">Last 24 Hours</option>
-            <option value="7d">Last 7 Days</option>
-          </select>
-        </div>
-        <div class="chart-container">
-          <canvas id="performanceChart"></canvas>
-        </div>
-      </section>
+      <!-- Left Column: Charts and Metrics -->
+      <div class="charts-column">
+        <!-- Anomaly Distribution Chart -->
+        <section class="card chart-card">
+          <div class="card-header">
+            <h3>Anomaly Distribution</h3>
+            <span class="badge" id="anomalyChartBadge">Loading...</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="anomalyChart"></canvas>
+          </div>
+        </section>
 
-      <!-- Health Metrics -->
-      <section class="card metrics-card">
-        <div class="card-header">
-          <h3>Health Metrics</h3>
-        </div>
-        <div class="metrics-list">
-          <div class="metric-item">
-            <span class="metric-label">CPU Usage</span>
-            <div class="metric-bar-container">
-              <div class="metric-bar" style="width: 45%"></div>
-            </div>
-            <span class="metric-value">45%</span>
+        <!-- Anomalies by Model Chart -->
+        <section class="card chart-card">
+          <div class="card-header">
+            <h3>Normal vs Anomaly by Device Model</h3>
+            <span class="badge" id="modelChartBadge">Loading...</span>
           </div>
-          <div class="metric-item">
-            <span class="metric-label">Memory Usage</span>
-            <div class="metric-bar-container">
-              <div class="metric-bar" style="width: 62%"></div>
-            </div>
-            <span class="metric-value">62%</span>
+          <div class="chart-container">
+            <canvas id="anomalyByModelChart"></canvas>
           </div>
-          <div class="metric-item">
-            <span class="metric-label">Temperature</span>
-            <div class="metric-bar-container">
-              <div class="metric-bar" style="width: 58%"></div>
-            </div>
-            <span class="metric-value">58°C</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Uptime</span>
-            <div class="metric-bar-container">
-              <div class="metric-bar" style="width: 99%"></div>
-            </div>
-            <span class="metric-value">99.8%</span>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Recent Anomalies -->
-      <section class="card anomalies-card">
-        <div class="card-header">
-          <h3>Recent Anomalies</h3>
-          <span class="badge">3</span>
-        </div>
-        <div class="anomalies-list">
-          <div class="anomaly-item warning">
-            <span class="anomaly-icon">⚠️</span>
-            <div class="anomaly-content">
-              <p class="anomaly-title">High Latency Detected</p>
-              <span class="anomaly-time">15 minutes ago</span>
-            </div>
+        <!-- Anomalies by Firmware Chart -->
+        <section class="card chart-card">
+          <div class="card-header">
+            <h3>Normal vs Anomaly by Firmware Version</h3>
+            <span class="badge" id="firmwareChartBadge">Loading...</span>
           </div>
-          <div class="anomaly-item info">
-            <span class="anomaly-icon">ℹ️</span>
-            <div class="anomaly-content">
-              <p class="anomaly-title">Connection Spike</p>
-              <span class="anomaly-time">1 hour ago</span>
-            </div>
+          <div class="chart-container">
+            <canvas id="anomalyByFirmwareChart"></canvas>
           </div>
-          <div class="anomaly-item warning">
-            <span class="anomaly-icon">⚠️</span>
-            <div class="anomaly-content">
-              <p class="anomaly-title">Packet Loss Increase</p>
-              <span class="anomaly-time">3 hours ago</span>
-            </div>
-          </div>
-        </div>
-        <button class="btn-link">View all anomalies →</button>
-      </section>
+        </section>
 
-      <!-- Connected Devices -->
-      <section class="card devices-card">
-        <div class="card-header">
-          <h3>Connected Devices</h3>
-          <button class="btn-icon">⋮</button>
+        <!-- Stats Row: Three columns -->
+        <div class="stats-row">
+          <!-- Health Metrics -->
+          <section class="card metrics-card">
+            <div class="card-header">
+              <h3>Health Metrics</h3>
+            </div>
+            <div class="metrics-list">
+              <div class="metric-item">
+                <span class="metric-label">CPU Usage</span>
+                <div class="metric-bar-container">
+                  <div class="metric-bar" style="width: 45%"></div>
+                </div>
+                <span class="metric-value">45%</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Memory Usage</span>
+                <div class="metric-bar-container">
+                  <div class="metric-bar" style="width: 62%"></div>
+                </div>
+                <span class="metric-value">62%</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Temperature</span>
+                <div class="metric-bar-container">
+                  <div class="metric-bar" style="width: 58%"></div>
+                </div>
+                <span class="metric-value">58°C</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Uptime</span>
+                <div class="metric-bar-container">
+                  <div class="metric-bar" style="width: 99%"></div>
+                </div>
+                <span class="metric-value">99.8%</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Frequency Distribution -->
+        <section class="card devices-card">
+          <div class="card-header">
+            <h3>Frequency Distribution</h3>
+            <span class="badge" id="totalDeviceBadge">0</span>
+          </div>
+          <div class="devices-list">
+            <div class="device-item">
+              <span class="device-icon">📡</span>
+              <div class="device-info">
+                <p class="device-name">2.4 GHz Band</p>
+                <span class="device-detail" id="freq2ghzDetail">0 devices (0%)</span>
+              </div>
+              <span class="device-signal">📊</span>
+            </div>
+            <div class="device-item">
+              <span class="device-icon">⚡</span>
+              <div class="device-info">
+                <p class="device-name">5 GHz Band</p>
+                <span class="device-detail" id="freq5ghzDetail">0 devices (0%)</span>
+              </div>
+              <span class="device-signal">📊</span>
+            </div>
+            <div class="device-item">
+              <span class="device-icon">🔒</span>
+              <div class="device-info">
+                <p class="device-name">WPA3 Security</p>
+                <span class="device-detail" id="wpa3Detail">0 devices</span>
+              </div>
+              <span class="device-signal">✅</span>
+            </div>
+            <div class="device-item">
+              <span class="device-icon">⚠️</span>
+              <div class="device-info">
+                <p class="device-name">Security Issues</p>
+                <span class="device-detail" id="securityIssues">0 devices</span>
+              </div>
+              <span class="device-signal">🔍</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Network Statistics -->
+        <section class="card devices-card">
+          <div class="card-header">
+            <h3>Network Statistics</h3>
+          </div>
+          <div class="devices-list">
+          <div class="device-item">
+            <span class="device-icon">📤</span>
+            <div class="device-info">
+              <p class="device-name">Avg Upload Speed</p>
+              <span class="device-detail" id="avgUploadSpeed">0 Mbps</span>
+            </div>
+          </div>
+          <div class="device-item">
+            <span class="device-icon">📥</span>
+            <div class="device-info">
+              <p class="device-name">Avg Download Speed</p>
+              <span class="device-detail" id="avgDownloadSpeed">0 Mbps</span>
+            </div>
+          </div>
+          <div class="device-item">
+            <span class="device-icon">🔄</span>
+            <div class="device-info">
+              <p class="device-name">High Retransmissions</p>
+              <span class="device-detail" id="highRetransCount">0 devices</span>
+            </div>
+          </div>
+            <div class="device-item">
+              <span class="device-icon">❌</span>
+              <div class="device-info">
+                <p class="device-name">TX Failures</p>
+              <span class="device-detail" id="highTxFailCount">0 devices</span>
+            </div>
+          </div>
+        </section>
         </div>
-        <div class="devices-list">
-          <div class="device-item">
-            <span class="device-icon">💻</span>
-            <div class="device-info">
-              <p class="device-name">MacBook Pro</p>
-              <span class="device-detail">192.168.1.105</span>
-            </div>
-            <span class="device-signal">📶</span>
+      </div>      <!-- Right Column: Recent Anomalies Sidebar -->
+      <div class="sidebar-column">
+        <!-- Recent Anomalies -->
+        <section class="card anomalies-card">
+          <div class="card-header">
+            <h3>Recent Anomalies</h3>
+            <span class="badge">3</span>
           </div>
-          <div class="device-item">
-            <span class="device-icon">📱</span>
-            <div class="device-info">
-              <p class="device-name">iPhone 14</p>
-              <span class="device-detail">192.168.1.108</span>
+          <div class="anomalies-list">
+            <div class="anomaly-item warning">
+              <span class="anomaly-icon">⚠️</span>
+              <div class="anomaly-content">
+                <p class="anomaly-title">High Latency Detected</p>
+                <span class="anomaly-time">15 minutes ago</span>
+              </div>
             </div>
-            <span class="device-signal">📶</span>
-          </div>
-          <div class="device-item">
-            <span class="device-icon">📺</span>
-            <div class="device-info">
-              <p class="device-name">Smart TV</p>
-              <span class="device-detail">192.168.1.112</span>
+            <div class="anomaly-item info">
+              <span class="anomaly-icon">ℹ️</span>
+              <div class="anomaly-content">
+                <p class="anomaly-title">Connection Spike</p>
+                <span class="anomaly-time">1 hour ago</span>
+              </div>
             </div>
-            <span class="device-signal">📶</span>
-          </div>
-          <div class="device-item">
-            <span class="device-icon">🖥️</span>
-            <div class="device-info">
-              <p class="device-name">Desktop PC</p>
-              <span class="device-detail">192.168.1.102</span>
+            <div class="anomaly-item warning">
+              <span class="anomaly-icon">⚠️</span>
+              <div class="anomaly-content">
+                <p class="anomaly-title">Packet Loss Increase</p>
+                <span class="anomaly-time">3 hours ago</span>
+              </div>
             </div>
-            <span class="device-signal">📶</span>
           </div>
-        </div>
-        <button class="btn-link">View all devices →</button>
-      </section>
+          <button class="btn-link">View all anomalies →</button>
+        </section>
+      </div>
 
     </div>
 

@@ -207,12 +207,38 @@ body {
 /* Content Grid */
 .content-grid {
   display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+}
+
+.charts-column {
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.sidebar-column {
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
 .chart-card {
   grid-column: span 2;
+}
+
+.stats-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stats-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .card-header {
